@@ -14,4 +14,4 @@ def save_data(data):
         json.dump(data, f, indent=4)
 
 def get_user_data(data, user_id):
-    return data.setdefault(str(user_id), {"workouts": []})
+    return data.setdefault(str(user_id), {"workouts": [], "plan": [], "last_workout": None, "points": 0, "streak": 0})
