@@ -2,7 +2,7 @@ from discord.ext.commands import command, slash_command, Cog
 from discord import Option
 from datetime import date
 
-from utils.utils import last_included_weekday
+import utils.utils
 import utils.data_manager
 
 class GymCog(Cog):
@@ -17,7 +17,7 @@ class GymCog(Cog):
         user_data = utils.data_manager.get_user_data(self.bot.data, user_id)
 
         # check if streak is increased or broken
-        last_included_day = last_included_weekday(user_data["plan"])
+        last_included_day = utils.utils.last_included_weekday(user_data["plan"])
         print(last_included_day)
 
         today = str(date.today())
@@ -38,25 +38,19 @@ class GymCog(Cog):
         user_id = ctx.author.id
         user_data = utils.data_manager.get_user_data(self.bot.data, user_id)
 
-        print(user_data)
-
         if day is None:
             await ctx.respond(f"your workout plan is: {'no weekdays in your plan' if not user_data['plan'] else ', '.join(user_data['plan'])}")
             return
 
         if day in user_data["plan"]:
             user_data["plan"].remove(day)
-            self.bot.save_data()
             await ctx.respond(f"{day} removed from your plan")
-            return
-
-        await ctx.respond(f"{day} added to your plan")
-        user_data["plan"].append(day)
+        else:
+            user_data["plan"].append(day)
+            await ctx.respond(f"{day} added to your plan")
+        user_data["plan"] = utils.utils.sort_plan(user_data["plan"])
         self.bot.save_data()
         return
-
-
-
 
 def setup(bot):
     bot.add_cog(GymCog(bot))

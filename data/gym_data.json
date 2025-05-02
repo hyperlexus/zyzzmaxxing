@@ -2,13 +2,15 @@
     "422800248935546880": {
         "workouts": [
             "2025-05-01",
-            "2025-05-01"
+            "2025-05-02"
         ],
         "plan": [
+            "Monday",
+            "Wednesday",
             "Thursday",
-            "Friday"
+            "Saturday"
         ],
-        "last_workout": "2025-05-01",
+        "last_workout": "2025-05-02",
         "points": 0,
         "streak": 0
     }
