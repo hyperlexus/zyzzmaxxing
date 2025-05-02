@@ -1,3 +1,4 @@
+import discord
 from discord.ext.commands import command, slash_command, Cog
 from discord import Option
 from datetime import date
@@ -30,6 +31,7 @@ class GymCog(Cog):
         output_string += "gym logged for today"
 
         await ctx.respond(output_string)
+        return
 
     @slash_command(name="plan", description="Plan your workout", guild_ids=[964302006091128893])
     async def set_plan(self, ctx, day: Option(str, "Add a day to your workout plan",
@@ -50,6 +52,19 @@ class GymCog(Cog):
             await ctx.respond(f"{day} added to your plan")
         user_data["plan"] = utils.utils.sort_plan(user_data["plan"])
         self.bot.save_data()
+        return
+
+    @slash_command(name="gym_info", description="Get info about your workout history", guild_ids=[964302006091128893])
+    async def gym_info(self, ctx):
+        user_id = ctx.author.id
+        user_data = utils.data_manager.get_user_data(self.bot.data, user_id)
+
+        output_string = f"Your last workout was on {user_data['last_workout']} "
+        output_string += f"\nPlan: {'no weekdays in your plan' if not user_data['plan'] else ', '.join(user_data['plan'])}"
+        output_string += f"\nStreak: {user_data['streak']}"
+        output_string += f"\nPoints: {user_data['points']}"
+        embed = discord.Embed(title="Your Workout History", color=0x00ff00, description=output_string)
+        await ctx.respond(embed=embed)
         return
 
 def setup(bot):
